@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios' 
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../app/apiInstance";
 
 function Signup() {
-  const API = "http://localhost:8080/auth/register";
   const navigate = useNavigate();
+
   const [form, setForm] = useState({
     username: "",
     email: "",
-    password: ""
+    password: "",
   });
+
   const [error, setError] = useState("");
 
   const validate = () => {
@@ -17,10 +18,12 @@ function Signup() {
       setError("Username must be at least 3 characters");
       return false;
     }
+
     if (!form.email.includes("@")) {
       setError("Email must contain @");
       return false;
     }
+
     if (form.password.length < 5) {
       setError("Password must be at least 5 characters");
       return false;
@@ -28,23 +31,25 @@ function Signup() {
 
     setError("");
     return true;
-  }
+  };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!validate()) return;
+    if (!validate()) return;
 
-  try {
-    const res = await axios.post(API, form);
+    try {
+      const res = await api.post("/auth/register", form);
 
-    alert(res.data.message);
+      alert(res.data.message);
 
-    navigate("/AI_Blog_Articles/login");
-  } catch (err) {
-    setError(err.response?.data?.message || "Registration Failed");
-  }
-};
+      navigate("/AI_Blog_Articles/login");
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Registration Failed"
+      );
+    }
+  };
 
   return (
     // PREMIUM FULL DARK WRAPPER
