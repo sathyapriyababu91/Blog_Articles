@@ -1,53 +1,60 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../app/apiInstance'
 
 function Login() {
- const API = "http://localhost:8080/auth/login";
   const navigate = useNavigate();
-  
+
   const [form, setForm] = useState({
     email: "",
     password: ""
   });
-  const [error, setError] = useState("");
 
+  const [error, setError] = useState("");
 
   const validate = () => {
     if (!form.email.includes("@")) {
       setError("Email must contain @");
       return false;
     }
+
     if (form.password.length < 5) {
       setError("Password must be at least 5 characters");
       return false;
     }
+
     setError("");
     return true;
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!validate()) return;
+    if (!validate()) return;
 
-  try {
-   const res = await axios.post(API, form);
+    try {
+      const res = await api.post("/auth/login", form);
 
-   console.log(res.data);
+      console.log(res.data);
 
-localStorage.setItem("token", res.data.token);
-localStorage.setItem("isLogin", "true");
-localStorage.setItem("username", res.data.username || res.data.name || res.data.userName);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("isLogin", "true");
+      localStorage.setItem(
+        "username",
+        res.data.username || res.data.name || res.data.userName
+      );
 
-window.dispatchEvent(new Event("authChange"));
+      window.dispatchEvent(new Event("authChange"));
 
+      navigate("/AI_Blog_Articles");
 
-navigate("/AI_Blog_Articles");
-  } catch (err) {
-    setError(err.response?.data?.message || "Invalid Email or Password");
-  }
-};
+    } catch (err) {
+      console.error(err);
+      setError(
+        err.response?.data?.message || "Invalid Email or Password"
+      );
+    }
+  };
 
   return (
     <div className='min-h-screen bg-[#070A13] flex items-center justify-center p-4 md:p-10'>
