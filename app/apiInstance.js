@@ -1,16 +1,17 @@
 import axios from "axios";
 
 const api = axios.create({
-       baseURL: "https://blog-articles-ll5b.onrender.com"
-     
+  baseURL: "https://blogai-summarizer.onrender.com/api",
 });
 
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
-    if (token){
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
 });
 
 export default api;
