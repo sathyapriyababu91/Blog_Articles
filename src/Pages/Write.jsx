@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../app/apiInstance";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -32,12 +32,12 @@ function Write() {
     setMessage("Generating AI summary...");
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/generate-summary",
-        {
-          description,
-        }
-      );
+      const response = await api.post(
+  "/generate-summary",
+  {
+    description,
+  }
+);
 
       const summaryText = response.data.summary;
 
@@ -77,10 +77,11 @@ function Write() {
 };
 
     try {
-      await axios.post(
-        "http://localhost:8080/api/blogs",
-        newArticle
-      );
+      await api.post(
+  "/blogs",
+  newArticle
+);
+      
 
       alert(`Article ${status} successfully!`);
       navigate("/AI_Blog_Articles/blog");

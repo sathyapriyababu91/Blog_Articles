@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { blogs as staticBlogs } from "../data/blogs";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../app/apiInstance";
 
 function BlogDetails() {
   const { id } = useParams();
@@ -14,9 +14,9 @@ function BlogDetails() {
   const [count, setCount] = useState(Math.floor(Math.random() * 40) + 10);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  // =========================
+
   // Fetch Blog
-  // =========================
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
     fetchSingleBlog();
@@ -30,8 +30,7 @@ function BlogDetails() {
 
       if (isMongoId) {
         // MongoDB blog
-        const res = await axios.get(
-          `http://localhost:8080/api/blogs/${id}`
+       const res = await api.get(`/blogs/${id}`
         );
 
         if (res.data) {
@@ -71,9 +70,9 @@ function BlogDetails() {
     }
   };
 
-  // =========================
+ 
   // Scroll Progress
-  // =========================
+
   useEffect(() => {
     const updateScrollProgress = () => {
       const totalScroll =
@@ -100,9 +99,9 @@ function BlogDetails() {
     };
   }, []);
 
-  // =========================
+  
   // Loading
-  // =========================
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#070A13] flex justify-center items-center">
@@ -113,9 +112,9 @@ function BlogDetails() {
     );
   }
 
-  // =========================
+
   // Blog Not Found
-  // =========================
+ 
   if (!blog) {
     return (
       <div className="p-20 text-center bg-[#070A13] min-h-screen flex flex-col justify-center items-center">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from "../../app/apiInstance";
 import { blogs as staticBlogs } from "../data/blogs"; 
 
 function Blog() {
@@ -24,24 +24,30 @@ function Blog() {
   }, [navigate]);
 
   const fetchBlogs = async () => {
-    try {
-      const username = localStorage.getItem("userName");
+  try {
+    const username = localStorage.getItem("username");
 
-      
-      const res = await axios.get(`http://localhost:8080/api/blogs/user/${username}`);
-
-      const userDatabaseBlogs = res.data || [];
-      
-      const combinedBlogs = [...userDatabaseBlogs, ...staticBlogs];
-
-      setBlogs(combinedBlogs);
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
+    if (!username) {
+      console.log("Username not found in localStorage");
       setBlogs(staticBlogs);
       setLoading(false);
+      return;
     }
-  };
+
+    const res = await api.get(`/blogs/user/${username}`);
+
+    const userDatabaseBlogs = res.data || [];
+
+    const combinedBlogs = [...userDatabaseBlogs, ...staticBlogs];
+
+    setBlogs(combinedBlogs);
+    setLoading(false);
+  } catch (err) {
+    console.error("Error fetching blogs:", err);
+    setBlogs(staticBlogs);
+    setLoading(false);
+  }
+};
   const toggleBookmark = (e, id) => {
     e.stopPropagation(); 
     if (savedBlogs.includes(id)) {

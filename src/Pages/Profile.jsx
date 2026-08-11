@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; 
+import api from "../../app/apiInstance";
 
 function Profile() {
   const navigate = useNavigate(); 
@@ -22,29 +22,35 @@ function Profile() {
 
   // Fetch articles and changed console log to English
   const fetchArticles = async (currentUsername) => {
-    try {
-      const response = await axios.get(`http://localhost:8080/api/blogs/user/${currentUsername}`);
-      console.log("Fetched data from server:", response.data); 
-      setMyArticles(response.data);
-    } catch (error) {
-      console.error("Error fetching articles:", error);
-    }
-  };
+  try {
+    const response = await api.get(
+      `/blogs/user/${currentUsername}`
+    );
+
+    console.log("Fetched data from server:", response.data);
+    setMyArticles(response.data);
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+  }
+};
 
   // Delete Article Function
   const handleDelete = async (articleId) => {
-    if (window.confirm("Are you sure you want to delete this article?")) {
-      try {
-        await axios.delete(`http://localhost:8080/api/blogs/${articleId}`);
-        // Remove deleted article from state instantly
-        setMyArticles(myArticles.filter((article) => article._id !== articleId));
-        alert("Article deleted successfully!");
-      } catch (error) {
-        console.error("Error deleting article:", error);
-        alert("Failed to delete article.");
-      }
+  if (window.confirm("Are you sure you want to delete this article?")) {
+    try {
+      await api.delete(`/blogs/${articleId}`);
+
+      setMyArticles(
+        myArticles.filter((article) => article._id !== articleId)
+      );
+
+      alert("Article deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting article:", error);
+      alert("Failed to delete article.");
     }
-  };
+  }
+};
 
   const handleLogout = () => {
     localStorage.removeItem("isLogin");
